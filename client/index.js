@@ -32,7 +32,7 @@ function start() {
 }
 
 // connect ot server
-const socket = io('http://localhost:8000');
+const socket = io('https://znill-2.onrender.com/');
 
 
 // disconnectin event
