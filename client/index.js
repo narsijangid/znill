@@ -1,4 +1,4 @@
-import { io } from 'socket.io-client';
+import { io } from 'socket.io-client/dist/socket.io.esm.min.js';
 
 // Global State
 let peer;
@@ -32,29 +32,13 @@ function start() {
 }
 
 // connect ot server
-const socket = io('https://znill-2.onrender.com/', {
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000
-});
+const socket = io('https://znill-2.onrender.com/');
 
-// Add connection status logging
-socket.on('connect', () => {
-  console.log('Connected to server');
-  document.querySelector('.modal').style.display = 'none';
-});
 
-socket.on('connect_error', (error) => {
-  console.error('Connection error:', error);
-  document.querySelector('.modal').style.display = 'block';
-  document.querySelector('.modal').innerHTML = 'Connection error. Please try again.';
-});
-
-socket.on('disconnect', (reason) => {
-  console.log('Disconnected:', reason);
-  document.querySelector('.modal').style.display = 'block';
-  document.querySelector('.modal').innerHTML = 'Disconnected from server. Please refresh.';
-});
+// disconnectin event
+socket.on('disconnected', () => {
+  location.href = `/?disconnect`
+})
 
 
 
