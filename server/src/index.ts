@@ -3,8 +3,15 @@ const app = express();
 import cors from 'cors';
 app.use(cors());
 import { Server } from 'socket.io';
-const server = app.listen('8000', () => console.log('Server is up, 8000'));
-const io = new Server(server, { cors: { origin: '*' } });
+const server = app.listen(process.env.PORT || 8000, () => console.log(`Server is up on port ${process.env.PORT || 8000}`));
+const io = new Server(server, { 
+  cors: { 
+    origin: '*',
+    methods: ['GET', 'POST']
+  },
+  pingTimeout: 60000,
+  pingInterval: 25000
+});
 import { handelStart, handelDisconnect, getType } from './lib';
 import { GetTypesResult, room } from './types';
 
@@ -12,16 +19,19 @@ let online: number = 0;
 let roomArr: Array<room> = [];
 
 io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
   online++;
   io.emit('online', online);
 
   // on start
   socket.on('start', cb => {
+    console.log('Start request from:', socket.id);
     handelStart(roomArr, socket, cb, io);
   })
 
   // On disconnection
-  socket.on('disconnect', () => {
+  socket.on('disconnect', (reason) => {
+    console.log('Client disconnected:', socket.id, 'Reason:', reason);
     online--;
     io.emit('online', online);
     handelDisconnect(socket.id, roomArr, io);
