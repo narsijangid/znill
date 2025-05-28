@@ -1,4 +1,4 @@
-import { io } from 'socket.io-client/dist/socket.io.esm.min.js';
+import { io } from 'socket.io-client';
 
 // Global State
 let peer;
